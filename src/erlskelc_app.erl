@@ -6,7 +6,6 @@
          stop/1
         ]).
 
-
 start(_StartType, _StartArgs) ->
     Dispatch = cowboy_router:compile([
                                       {'_', [
@@ -14,11 +13,11 @@ start(_StartType, _StartArgs) ->
                                              {"/websocket", websocket_handler, []}
                                             ]}
                                      ]),
-    {ok, _} = cowboy:start_http(http, 100, [{port, 8080}], [
-                                                            {env, [{dispatch, Dispatch}]}
-                                                           ]),
+    {ok, _} = cowboy:start_clear(http,
+                                 100,
+                                 [{port, 8080}],
+                                 #{env => #{dispatch => Dispatch}}),
     erlskelc_sup:start_link().
-
 
 stop(_State) ->
     ok.
